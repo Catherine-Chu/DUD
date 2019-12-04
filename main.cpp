@@ -10,6 +10,7 @@
 using namespace std;
 #define THREAD_NUM 1
 #define PI acos(-1)
+const string RUN_ENV = "MAC";
 int a_num = 274/5;
 int t_num = 274;
 const int width = 40;
@@ -197,9 +198,24 @@ int main() {
     clock_t startT, endT;
     vector<double> dec_times;
     fstream infile;
-    ofstream outfile("/Users/chuwenjie/CLionProjects/DUD/agent_poses.txt", ios::app);
-    char s[width + 1];
-    infile.open("/Users/chuwenjie/CLionProjects/InitSettingGenerator/grids.txt", ios::in);
+    string outfile_path;
+    if(RUN_ENV=="WIN"){
+        outfile_path = "D:\\projects\\CLionProjects\\DUD\\agent_poses.txt";
+    }else if(RUN_ENV=="MAC"){
+        outfile_path = "/Users/chuwenjie/CLionProjects/DUD/agent_poses.txt";
+    }else{
+        outfile_path = "./agent_poses.txt";
+    }
+    ofstream outfile(outfile_path, ios::app);
+    string infile_path;
+    if(RUN_ENV =="WIN"){
+        infile_path = "D:\\projects\\CLionProjects\\InitSettingGenerator\\grids.txt";
+    }else if(RUN_ENV=="MAC"){
+        infile_path = "/Users/chuwenjie/CLionProjects/InitSettingGenerator/grids.txt";
+    }else{
+        infile_path = "../InitSettingGenerator/grids.txt";
+    }
+    infile.open(infile_path, ios::in);
     if (!infile) {
         cout << "open failed" << endl;
         exit(1);
