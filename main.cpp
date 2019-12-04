@@ -10,10 +10,10 @@
 using namespace std;
 #define THREAD_NUM 1
 #define PI acos(-1)
-int a_num = 683/5;
-int t_num = 683;
-const int width = 60;
-const int height = 60;
+int a_num = 274/5;
+int t_num = 274;
+const int width = 40;
+const int height = 40;
 double measure_scale = 1;
 int v_max = 1;
 double force_coff = 10;
