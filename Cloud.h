@@ -18,6 +18,8 @@ public:
     std::vector<std::vector<int>> agent_poses;
     Cloud();
     Cloud(int a_num,int t_num, int w, int h, double sc);
+    Cloud(int w, int h, double sc);
+    void set_a_num(int a_num);
     void calculate_dt_gradient();
 };
 

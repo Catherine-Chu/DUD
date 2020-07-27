@@ -24,3 +24,12 @@ void DTField::init_field(int w, int h) {
         }
     }
 }
+
+void DTField::reset_dt(int w, int h){
+    for (int x = 0; x < w; x++) {
+        for (int y = 0; y < h; y++) {
+            pixel_i[x][y]=0;
+            pixel_gradient[x][y].clear();
+        }
+    }
+}

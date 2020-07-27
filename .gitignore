@@ -5,3 +5,4 @@
 CMakeLists.txt
 log.txt
 agent_poses.txt
+/exp/

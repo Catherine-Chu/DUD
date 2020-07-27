@@ -21,6 +21,22 @@ Cloud::Cloud(int a_num, int t_num, int w, int h, double sc) {
     measure_sc=sc;
 }
 
+Cloud::Cloud(int w, int h, double sc) {
+    dt.init_field(w, h);
+    ac_tar = 0;
+    for (int x = 0; x < w; x++) {
+        agent_poses.emplace_back();
+        for (int y = 0; y < h; y++) {
+            agent_poses[x].push_back(-1);
+        }
+    }
+    measure_sc=sc;
+}
+
+void Cloud::set_a_num(int a_num) {
+    this->a_num = a_num;
+}
+
 void Cloud::calculate_dt_gradient() {
     //在所有iteration开始之前一次性计算
     for(int i=0;i<dt.gr_scale[0];i++){

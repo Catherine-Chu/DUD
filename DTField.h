@@ -15,6 +15,7 @@ public:
     std::vector<std::vector<std::vector<double>>> pixel_gradient;
     DTField();
     void init_field(int w,int h);
+    void reset_dt(int w, int h);
 };
 
 
