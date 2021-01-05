@@ -9,13 +9,16 @@
 #include "Agent.h"
 
 using namespace std;
-#define TEMP_THREAD_NUM 1
+//#define TEMP_THREAD_NUM 7
+//#define PI acos(-1)
+//const string RUN_ENV = "MAC";
+#define TEMP_THREAD_NUM 64
 #define PI acos(-1)
-const string RUN_ENV = "MAC";
+const string RUN_ENV = "LINUX";
 //int a_num = 274/5;
 //int t_num = 274;
-const int width = 40;
-const int height = 40;
+const int width = 80;
+const int height = 80;
 double measure_scale = 1;
 int v_max = 1;
 double force_coff = 10;
@@ -270,15 +273,16 @@ bool initialize_no_seed_agent_positions(int f, int min_i, int min_j, int shape_a
             break;
         }
     }
-    int max_height = int(0.6 * height);
+//    int max_height = int(0.6 * height);
+    int max_height = height - 3;
     vector<vector<int>> incre_options;
     if (not is_enough) {
         for (int i = min_i + 1; i < width - 4; i++) {
             for (int j = 4; j <= max_height; j++) {
                 if (j > min_j - 3) {
                     bool is_valid = true;
-                    for (int px = i - 2; px <= i + 2 && px<width-1; px++) {
-                        for (int py = j - 2; py <= j + 2 && py<height-1; py++) {
+                    for (int px = i - 2; px <= i + 2 && px < width - 1; px++) {
+                        for (int py = j - 2; py <= j + 2 && py < height - 1; py++) {
 //                            cout<<px<<" "<<py<<endl;
                             if (center.dt.grids[px][py] == 0) {
                                 is_valid = is_valid && true;
@@ -321,8 +325,8 @@ bool initialize_no_seed_agent_positions(int f, int min_i, int min_j, int shape_a
             for (int j = 4; j <= max_height; j++) {
                 if (j > min_j - 3) {
                     bool is_valid = true;
-                    for (int px = i - 2; px <= i + 3 && px<width-1; px++) {
-                        for (int py = j - 2; py <= j + 2 &&py<height-1; py++) {
+                    for (int px = i - 2; px <= i + 3 && px < width - 1; px++) {
+                        for (int py = j - 2; py <= j + 2 && py < height - 1; py++) {
 //                            cout<<px<<" "<<py<<endl;
                             if (center.dt.grids[px][py] == 0) {
                                 is_valid = is_valid && true;
@@ -363,11 +367,11 @@ bool initialize_no_seed_agent_positions(int f, int min_i, int min_j, int shape_a
     if (not is_enough) {
         for (int o = 0; o < incre_options.size(); o++) {
             int i = incre_options[o][0];
-            for (int j = incre_options[o][1] + 1; j < height-2; j++) {
+            for (int j = incre_options[o][1] + 1; j < height - 2; j++) {
                 if (j > min_j - 3) {
                     bool is_valid = true;
-                    for (int px = i - 2; px <= i + 2 && px<width-1; px++) {
-                        for (int py = j - 2; py <= j + 2 && py<height-1; py++) {
+                    for (int px = i - 2; px <= i + 2 && px < width - 1; px++) {
+                        for (int py = j - 2; py <= j + 2 && py < height - 1; py++) {
 //                            cout<<px<<" "<<py<<endl;
                             if (center.dt.grids[px][py] == 0) {
                                 is_valid = is_valid && true;
@@ -402,28 +406,48 @@ bool initialize_no_seed_agent_positions(int f, int min_i, int min_j, int shape_a
             }
         }
     }
-
     if (not is_enough) {
         cout << "There isn't enough space for initialization." << endl;
 
     }
+    cout << shape_agent_num << " " << cnt << endl;
     return is_enough;
 }
 
+void split(const string & s, vector<string> & tokens, const string & delimiters = " "){
+    string::size_type lastPos = s.find_first_not_of(delimiters,0);
+    string::size_type pos = s.find_first_of(delimiters, lastPos);
+    while(string::npos != pos || string::npos != lastPos){
+        tokens.emplace_back(s.substr(lastPos, pos-lastPos));
+        lastPos = s.find_first_not_of(delimiters, pos);
+        pos = s.find_first_of(delimiters, lastPos);
+    }
+}
 
-int main() {
+//specific initialization
+int main(int argc, char **argv) {
+    //    string dictionary, out_dict;
+    //    if (RUN_ENV == "WIN") {
+    //        dictionary =
+    //                "D:\\projects\\CLionProjects\\InitSettingGenerator\\tmp_edge_display\\" + to_string(width) + '_' + to_string(height);
+    //        out_dict = "D:\\projects\\CLionProjects\\DUD\\exp";
+    //    } else if (RUN_ENV == "MAC") {
+    //        dictionary =
+    //                "/Users/chuwenjie/CLionProjects/InitSettingGenerator/tmp_edge_display/" + to_string(width) + '*' + to_string(height);
+    //        out_dict = "/Users/chuwenjie/CLionProjects/DUD/exp";
+    //    } else {
+    //        dictionary = "./exp/" + to_string(width) + '*' + to_string(height);
+    //        out_dict = "./exp";
+    //    }
+    string work_root = argv[1];
     string dictionary, out_dict;
     if (RUN_ENV == "WIN") {
-        dictionary =
-                "D:\\projects\\CLionProjects\\InitSettingGenerator\\tmp_edge_display\\" + to_string(width) + '_' + to_string(height);
-        out_dict = "D:\\projects\\CLionProjects\\DUD\\exp";
-    } else if (RUN_ENV == "MAC") {
-        dictionary =
-                "/Users/chuwenjie/CLionProjects/InitSettingGenerator/tmp_edge_display/" + to_string(width) + '*' + to_string(height);
-        out_dict = "/Users/chuwenjie/CLionProjects/DUD/exp";
+        dictionary = work_root +
+                     "\\inputs\\" + argv[2] + "\\" + to_string(width) + '_' + to_string(height) + "\\" + argv[4] ;
+        out_dict = work_root + "\\outputs\\" + argv[3] + "\\" + to_string(width) + '_' + to_string(height) + "\\" + argv[4];
     } else {
-        dictionary = "./exp/" + to_string(width) + '*' + to_string(height);
-        out_dict = "./exp";
+        dictionary = work_root + "/inputs/" + argv[2] + "/" + to_string(width) + '_' + to_string(height) + '/' + argv[4];
+        out_dict = work_root + "/outputs/" + argv[3] + "/" + to_string(width) + '_' + to_string(height) + '/' + argv[4];
     }
     DIR *dir;
     struct dirent *ptr;
@@ -447,9 +471,18 @@ int main() {
             }
             filelist.push_back(temp);
             string _post = ptr->d_name;
-            int shape_num = _post[5] - '0';
+            //int shape_num = _post[5] - '0';
+            //int a_num = atoi(_post.substr(7, _post.size() - 11).c_str());
+            //Add
+            vector<string> split_list;
+            split(_post, split_list, "_");
+            string shape_num_str = split_list[split_list.size()-2];
+            string a_num_str = split_list[split_list.size()-1];
+            a_num_str = a_num_str.substr(0,a_num_str.find("."));
+            int shape_num = std::stoi(shape_num_str);
+            int a_num = std::stoi(a_num_str);
+            //Add End
             shape_nums.push_back(shape_num);
-            int a_num = atoi(_post.substr(7, _post.size() - 11).c_str());
             a_num_s.push_back(a_num);
             _post = _post.substr(4, _post.size() - 4);
             name_posts.push_back(_post);
@@ -501,7 +534,7 @@ int main() {
             swarm.push_back(Agent());
         }
         srand(time(NULL));
-        int rand_more = 4;
+        int rand_more = 0;
         if (a_mode == more_a) {
             //如果是多,则为N+3~N+0.05N+3
             for (int i = 0; i < rand_more + 3; i++) {
@@ -544,8 +577,12 @@ int main() {
             cout << "Experiment failed!" << endl;
             continue;
         }
+        center.dt.grids[min_i][min_j-1] = 1;
+        center.dt.grids[min_i+1][min_j-1] = 1;
+        center.dt.grids[min_i][min_j-2] = 1;
+        center.dt.grids[min_i][min_j] = 1;
 
-        int exp_num = 5;
+        int exp_num = 50;
         const int THREAD_NUM = TEMP_THREAD_NUM>shape_agent_num?shape_agent_num:TEMP_THREAD_NUM;
 
         double exp_avg_iter = 0;
@@ -612,13 +649,14 @@ int main() {
             clock_t startT, endT;
             vector<double> dec_times;
             center.calculate_dt_gradient();
-            center.ac_tar = shape_agent_num-1;
+            center.ac_tar = shape_agent_num-4;
             vector<int> ac_tar_decay;
             ac_tar_decay.push_back(center.ac_tar);
 
             cout<<"tar: "<<shape_agent_num<<" "<<center.dt.target_poses.size()<<endl;
 
-            while (center.ac_tar > rand_more+3 && terminal < 1000 && minor_minor_terminal<500) {
+//            while (center.ac_tar > rand_more+3 && terminal < 1000 && minor_minor_terminal<500) {
+            while (center.ac_tar > 0 && terminal < 1000 and minor_terminal < 500) {
                 cout << center.ac_tar << endl;
                 startT = clock();
                 terminal += 1;
@@ -662,6 +700,10 @@ int main() {
 //                for (int k = 0; k < shape_agent_num; k++) {
 //                    swarm[action_order[k]].take_action();
 //                }
+
+                for (int k = 0; k < shape_agent_num; k++) {
+                    swarm[k].take_action();
+                }
 
                 endT = clock();
                 dec_times.push_back((double) (endT - startT));
@@ -765,21 +807,33 @@ int main() {
     return 0;
 }
 
-/*random initialization main*/
-//int main() {
+
+/*random initialization*/
+//int main(int argc, char **argv) {
+////    string dictionary, out_dict;
+////    if (RUN_ENV == "WIN") {
+////        dictionary =
+////                "D:\\projects\\CLionProjects\\InitSettingGenerator\\display\\" + to_string(width) + '_' + to_string(height);
+////        out_dict = "D:\\projects\\CLionProjects\\DUD\\exp";
+////    } else if (RUN_ENV == "MAC") {
+////        dictionary =
+////                "/Users/chuwenjie/CLionProjects/InitSettingGenerator/display/" + to_string(width) + '_' + to_string(height);
+////        out_dict = "/Users/chuwenjie/CLionProjects/DUD/exp";
+////    } else {
+////        dictionary = "./exp/" + to_string(width) + '*' + to_string(height);
+////        out_dict = "./exp";
+////    }
+//    string work_root = argv[1];
 //    string dictionary, out_dict;
 //    if (RUN_ENV == "WIN") {
-//        dictionary =
-//                "D:\\projects\\CLionProjects\\InitSettingGenerator\\display\\" + to_string(width) + '_' + to_string(height);
-//        out_dict = "D:\\projects\\CLionProjects\\DUD\\exp";
-//    } else if (RUN_ENV == "MAC") {
-//        dictionary =
-//                "/Users/chuwenjie/CLionProjects/InitSettingGenerator/display/" + to_string(width) + '*' + to_string(height);
-//        out_dict = "/Users/chuwenjie/CLionProjects/DUD/exp";
+//        dictionary = work_root +
+//                     "\\inputs\\" + argv[2] + "\\" + to_string(width) + '_' + to_string(height) + "\\" + argv[4] ;
+//        out_dict = work_root + "\\outputs\\" + argv[3] + "\\" + to_string(width) + '_' + to_string(height) + "\\" + argv[4];
 //    } else {
-//        dictionary = "./exp/" + to_string(width) + '*' + to_string(height);
-//        out_dict = "./exp";
+//        dictionary = work_root + "/inputs/" + argv[2] + "/" + to_string(width) + '_' + to_string(height) + '/' + argv[4];
+//        out_dict = work_root + "/outputs/" + argv[3] + "/" + to_string(width) + '_' + to_string(height) + '/' + argv[4];
 //    }
+//
 //    DIR *dir;
 //    struct dirent *ptr;
 //    vector<string> name_posts;
@@ -802,9 +856,18 @@ int main() {
 //            }
 //            filelist.push_back(temp);
 //            string _post = ptr->d_name;
-//            int shape_num = _post[5] - '0';
+////            int shape_num = _post[5] - '0';
+////            int a_num = atoi(_post.substr(7, _post.size() - 11).c_str());
+//            //Add
+//            vector<string> split_list;
+//            split(_post, split_list, "_");
+//            string shape_num_str = split_list[split_list.size()-2];
+//            string a_num_str = split_list[split_list.size()-1];
+//            a_num_str = a_num_str.substr(0,a_num_str.find("."));
+//            int shape_num = std::stoi(shape_num_str);
+//            int a_num = std::stoi(a_num_str);
+//            //Add End
 //            shape_nums.push_back(shape_num);
-//            int a_num = atoi(_post.substr(7, _post.size() - 11).c_str());
 //            a_num_s.push_back(a_num);
 //            _post = _post.substr(4, _post.size() - 4);
 //            name_posts.push_back(_post);
@@ -820,7 +883,7 @@ int main() {
 //        for (int k = 0; k < a_num; k++) {
 //            swarm.push_back(Agent());
 //        }
-//        int exp_num = 20;
+//        int exp_num = 50;
 //
 //        string out_arg;
 //        if (RUN_ENV == "WIN") {
